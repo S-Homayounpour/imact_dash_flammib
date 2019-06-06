@@ -288,6 +288,7 @@ observeEvent(input$prmbldr_site_addedd,{
     req(site_df(),struc_df(),flora_df(),
         def_param_species_df(),
         input$rec_to_model)
+  if(input$rec_to_model<=max(site_df()$record)){
   base_params_init <- paramBuilder(
       site_df(),
       struc_df(),
@@ -299,6 +300,7 @@ observeEvent(input$prmbldr_site_addedd,{
     base_params_init$value[base_params_init$param == "leafForm"] <- "flat"
     base_params$values <- base_params_init
     base_params_stat$status <- 2
+  }
   })  
   ## param build output
   ## Throw error if inputs are not uploaded  
@@ -339,6 +341,9 @@ prm_bld_error_output<- eventReactive(input$prmbldr_site_addedd,{
       createAlert(session, "prm_build_error", "prmbld_alert", title = "Oops",
                   content = "uploaded species does not follow template.", append = TRUE)
     }
+  }else if(input$rec_to_model>max(site_df()$record)){
+    createAlert(session, "prm_build_error", "prmbld_alert", title = "Oops",
+                content = "Number of record is not in the range", append = TRUE)
   }else{
     closeAlert(session,"prmbld_alert")
   }
